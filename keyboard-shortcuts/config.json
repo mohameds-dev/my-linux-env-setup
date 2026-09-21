@@ -1,0 +1,35 @@
+{
+  "packages": ["xcape", "jq"],
+
+  "xcape": {
+    "mapping": "Super_L=Super_R",
+    "timeout_ms": 200,
+    "comment": "Makes a quick tap-and-release of Super_L (with nothing else pressed) emit a synthetic Super_R press. Super_L itself is left alone as a normal Mod4 modifier, so Super+<key> combos are never intercepted or delayed."
+  },
+
+  "remove": [
+    {
+      "channel": "xfce4-keyboard-shortcuts",
+      "property": "/commands/custom/Super_L",
+      "comment": "Never bind an app-launch command directly to bare Super_L. xfsettingsd grabs it as a plain key and fires on keydown, before any Super+<key> combo can be recognized -- every Super+X shortcut loses the race. Use the xcape mapping above plus a binding on the synthetic key (Super_R) instead."
+    }
+  ],
+
+  "commands": [
+    {
+      "keys": "Super_R",
+      "command": "xfce4-popup-whiskermenu",
+      "comment": "Tap-only app menu. Only fires when xcape emits Super_R, i.e. Super was tapped alone. Swap the command if your DE uses a different menu (e.g. xfce4-appfinder, wofi, rofi)."
+    }
+  ],
+
+  "xfwm4": [
+    { "keys": "<Super>Up", "action": "maximize_window_key", "comment": "Maximize the focused window. Plain arrow keys are unbound by default in xfwm4 (only the KP_* keypad variants ship bound), so this must be added explicitly." },
+    { "keys": "<Super>Left", "action": "tile_left_key", "comment": "Snap window to left half of screen." },
+    { "keys": "<Super>Right", "action": "tile_right_key", "comment": "Snap window to right half of screen." },
+    { "keys": "<Super><Shift>Left", "action": "move_window_to_monitor_left_key", "comment": "Move the focused window to the monitor positioned to the left. No-op with a single monitor. NOTE: move_window_left_key (no 'to_monitor') looks like the obvious name but is a stale/dead action on xfwm4 4.18 -- it's accepted by xfconf without error but xfwm4 doesn't recognize it, so the binding silently does nothing." },
+    { "keys": "<Super><Shift>Right", "action": "move_window_to_monitor_right_key", "comment": "Move the focused window to the monitor positioned to the right. No-op with a single monitor. Same move_window_right_key trap as above -- use the _to_monitor_ form." },
+    { "keys": "<Super><Shift>Up", "action": "move_window_to_monitor_up_key", "comment": "Move the focused window to the monitor positioned above. No-op with a single monitor." },
+    { "keys": "<Super><Shift>Down", "action": "move_window_to_monitor_down_key", "comment": "Move the focused window to the monitor positioned below. No-op with a single monitor." }
+  ]
+}
