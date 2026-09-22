@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Mirrors an Android device screen (Samsung S9 FE) onto this laptop over
+# USB, via scrcpy. See install-scrcpy.sh in ../tools-setup for the
+# underlying install.
+set -euo pipefail
+
+usage() {
+    cat <<EOF
+Usage: mirror-tablet [scrcpy-args...]
+
+Mirrors the USB-connected Android device's screen in a window, tuned for a
+presentation: device stays awake, resolution/bitrate capped for low latency.
+
+Any extra arguments are passed straight through to scrcpy, e.g.:
+  mirror-tablet --fullscreen
+  mirror-tablet --turn-screen-off   # blank the tablet's own screen while mirroring
+
+First-time setup on the device: Settings > About tablet > tap "Build number"
+7 times to unlock Developer Options, then Settings > Developer options >
+enable "USB debugging". Plug in via USB and accept the "Allow USB
+debugging?" prompt that appears on the tablet.
+EOF
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    usage
+    exit 0
+fi
+
+if ! command -v scrcpy >/dev/null 2>&1; then
+    echo "mirror-tablet: scrcpy isn't installed." >&2
+    echo "Run ../tools-setup/install-scrcpy.sh first." >&2
+    exit 1
+fi
+
+DEVICE_COUNT="$(adb devices | grep -c 'device$' || true)"
+if [[ "$DEVICE_COUNT" -eq 0 ]]; then
+    echo "mirror-tablet: no authorized device found." >&2
+    echo "Check: USB debugging enabled on the tablet, cable plugged in, and" >&2
+    echo "the \"Allow USB debugging?\" prompt accepted on the tablet screen." >&2
+    echo "Current adb state:" >&2
+    adb devices >&2
+    exit 1
+fi
+
+exec scrcpy --stay-awake -m 1920 -b 8M "$@"

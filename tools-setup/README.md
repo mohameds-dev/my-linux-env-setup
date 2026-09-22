@@ -26,6 +26,10 @@ no TTY attached.
 | `install-git.sh` | Installs `git` via `apt`. |
 | `install-chrome.sh` | Installs Google Chrome (stable) from Google's official `.deb`. |
 | `install-vscode.sh` | Installs VS Code from Microsoft's official `.deb`. |
+| `install-discord.sh` | Installs Discord from Discord's official `.deb`. |
+| `install-clion.sh` | Installs CLion from JetBrains' official Linux tarball into `/opt`, symlinked onto `PATH`. Needs an interactive JetBrains login/trial on first launch — see `../cpp-dsa-setup/` for a terminal/VS Code fallback that needs no login. |
+| `install-nvidia-driver.sh` | Switches an NVIDIA GPU from `nouveau` to the proprietary driver via `ubuntu-drivers autoinstall`, and sets `prime-select on-demand` on hybrid (iGPU + NVIDIA) laptops. Hardware-detected, not hardcoded — works on this laptop's RTX 3050 Ti, a desktop with an RTX 3060 Ti, or anything else with an NVIDIA card. No-ops cleanly on machines with no NVIDIA GPU. **Requires a reboot afterward** to actually load the new driver — this script won't reboot for you. |
+| `install-scrcpy.sh` | Installs `adb` via apt, plus `scrcpy` from its official GitHub Releases prebuilt Linux binary into `/opt`, symlinked onto `PATH` (apt's own `scrcpy` is too old to work with modern Android and is removed if present). Used to mirror an Android device's screen over USB — see `../tablet-mirror/`. |
 
 ## Behavior / guarantees
 
@@ -43,9 +47,15 @@ no TTY attached.
 - **Single password prompt** — only `run-all.sh` calls `sudo -v` /
   keep-alive. Individual scripts just call `sudo apt-get ...` directly and
   rely on the cached credential.
-- **Trusted commands only** — every script only touches `apt`/`apt-get`
-  installs from official vendor sources (Google, Microsoft) or the distro
-  repos. No arbitrary remote scripts are piped into a shell.
+- **Trusted commands only** — every script only pulls from official vendor
+  sources (Google, Microsoft, JetBrains, Discord) or the distro repos, via
+  `apt`/`apt-get` or a plain tarball download. No arbitrary remote scripts
+  are piped into a shell.
+- **Hardware-aware where it matters** — `install-nvidia-driver.sh` detects
+  GPU hardware by PCI vendor ID before doing anything, so it's safe to run
+  (and no-ops cleanly) on a machine with no NVIDIA GPU at all. It's the one
+  script here that needs a reboot to fully take effect — it tells you so
+  instead of rebooting on its own.
 
 ## Adding a new tool
 
