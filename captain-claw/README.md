@@ -129,9 +129,28 @@ captain-claw/
 ├── validate_installation_files.sh   # Validates all assets & templates before any sudo/install action
 ├── install.sh                       # Automated setup & Wine prefix creator (to be executed)
 ├── launch.sh                        # Standalone runner with optimal env vars
+├── clean_uninstall.sh               # Completely removes installed game & prefix for a clean slate
 ├── ddraw.ini                        # Pre-configured 60 FPS & aspect-ratio config
 ├── captain-claw.desktop             # Application menu entry for Linux Mint
 ├── downloads/                       # Staging directory for manually downloaded files (e.g. CLAW.FEC)
 └── tests/                           # TDD automated verification suite
-    └── test-validate-installation.sh
+    ├── test-validate-installation.sh
+    └── test-clean-uninstall.sh
 ```
+
+---
+
+## Clean Uninstallation & Reset
+
+If you ever want to completely wipe the installation and reset for a clean install:
+```bash
+./clean_uninstall.sh
+```
+*(Prompts for confirmation; pass `-y` to skip).*
+
+This completely wipes:
+- `~/games/captain-claw` (game binaries and isolated Wine prefix)
+- `~/.local/share/applications/captain-claw.desktop`
+- `~/.local/share/icons/hicolor/*/apps/captain-claw.png`
+
+It safely **preserves `downloads/`** so you don't need to re-download `CLAW.FEC` when re-installing!
