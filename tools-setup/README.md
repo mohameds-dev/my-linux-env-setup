@@ -28,6 +28,8 @@ no TTY attached.
 | `install-vscode.sh` | Installs VS Code from Microsoft's official `.deb`. |
 | `install-discord.sh` | Installs Discord from Discord's official `.deb`. |
 | `install-clion.sh` | Installs CLion from JetBrains' official Linux tarball into `/opt`, symlinked onto `PATH`. Needs an interactive JetBrains login/trial on first launch — see `../cpp-dsa-setup/` for a terminal/VS Code fallback that needs no login. |
+| `install-antigravity-ide.sh` | Installs Antigravity IDE (Google's AI-first editor, built on VS Code) from Google's official Linux tarball into `~/.local/share/antigravity-ide`, symlinked onto `PATH` at `~/.local/bin/antigravity-ide`, with desktop launcher integration. Per-user install, no sudo needed. |
+| `install-go.sh` | Installs Go (latest stable) from Google/Go's official Linux tarball into `/usr/local/go`, symlinked onto `PATH` at `/usr/local/bin/{go,gofmt}`. |
 | `install-nvidia-driver.sh` | Switches an NVIDIA GPU from `nouveau` to the proprietary driver via `ubuntu-drivers autoinstall`, and sets `prime-select on-demand` on hybrid (iGPU + NVIDIA) laptops. Hardware-detected, not hardcoded — works on this laptop's RTX 3050 Ti, a desktop with an RTX 3060 Ti, or anything else with an NVIDIA card. No-ops cleanly on machines with no NVIDIA GPU. **Requires a reboot afterward** to actually load the new driver — this script won't reboot for you. |
 | `install-scrcpy.sh` | Installs `adb` via apt, plus `scrcpy` from its official GitHub Releases prebuilt Linux binary into `/opt`, symlinked onto `PATH` (apt's own `scrcpy` is too old to work with modern Android and is removed if present). Used to mirror an Android device's screen over USB — see `../tablet-mirror/`. |
 

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Captain Claw
+GenericName=Platform Game
+Comment=Play Captain Claw (1997) at 60 FPS with authentic PC keyboard controls
+Exec=/home/the_mhmd/projects/linux-env-setup/captain-claw/launch.sh
+Icon=captain-claw
+Terminal=false
+Type=Application
+Categories=Game;ActionGame;Adventure;
+StartupNotify=true
