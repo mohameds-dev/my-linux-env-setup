@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Feeding Frenzy 2
+Comment=Feeding Frenzy 2: Shipwreck Showdown (Wine 60 FPS)
+Exec=/home/the_mhmd/projects/linux-env-setup/feeding-frenzy-2/launch.sh
+Icon=feeding-frenzy-2
+Terminal=false
+Type=Application
+Categories=Game;ArcadeGame;
+StartupNotify=true
+StartupWMClass=popcapgame1.exe
