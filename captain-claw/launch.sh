@@ -49,6 +49,41 @@ if [[ ! -d "${CLAW_WINE_PREFIX}" ]] || [[ ! -f "${CLAW_WINE_PREFIX}/drive_c/wind
     WINEPREFIX="${CLAW_WINE_PREFIX}" WINEDEBUG="-all" wine reg add "HKCU\\Software\\Wine\\DllOverrides" /v ddraw /d "native,builtin" /f 2>/dev/null || true
 fi
 
+# Start background MIDI synthesizer for Captain Claw's soundtrack
+SYNTH_PID=""
+if command -v fluidsynth &>/dev/null; then
+    SF2_PATH=""
+    for sf in \
+        "${CLAW_GAME_DIR}/CLAW4.SF2" \
+        "${CLAW_GAME_DIR}/claw4.sf2" \
+        "${CLAW_GAME_DIR}/CLAW.SF2" \
+        "${SCRIPT_DIR}/downloads/CLAW4.SF2" \
+        "/usr/share/sounds/sf2/FluidR3_GM.sf2" \
+        "/usr/share/sounds/sf2/default-GM.sf2" \
+        "/usr/share/sounds/sf2/"*.sf2; do
+        if [[ -f "$sf" ]]; then
+            SF2_PATH="$sf"
+            break
+        fi
+    done
+
+    if [[ -n "$SF2_PATH" ]]; then
+        if ! pgrep -x fluidsynth &>/dev/null; then
+            echo "Starting FluidSynth MIDI synthesizer ($(basename "$SF2_PATH"))..."
+            fluidsynth -a pulseaudio -m alsa_seq -s -i "$SF2_PATH" &>/dev/null &
+            SYNTH_PID=$!
+            sleep 0.5
+        fi
+    fi
+elif command -v timidity &>/dev/null; then
+    if ! pgrep -x timidity &>/dev/null; then
+        echo "Starting TiMidity++ MIDI synthesizer..."
+        timidity -iA -Os &>/dev/null &
+        SYNTH_PID=$!
+        sleep 0.5
+    fi
+fi
+
 # Display resolution restoration safety-net:
 # Guarantees that upon game exit (or crash), the desktop resolution is immediately restored to native.
 restore_display() {
@@ -56,7 +91,15 @@ restore_display() {
         xrandr -s 0 2>/dev/null || true
     fi
 }
-trap restore_display EXIT INT TERM
+
+# Cleanup handler: restores display resolution and stops background MIDI synth
+cleanup() {
+    restore_display
+    if [[ -n "${SYNTH_PID}" ]] && kill -0 "${SYNTH_PID}" 2>/dev/null; then
+        kill "${SYNTH_PID}" 2>/dev/null || true
+    fi
+}
+trap cleanup EXIT INT TERM
 
 # Ensure working directory is the game folder so DLLs and assets load correctly
 cd "${CLAW_GAME_DIR}"

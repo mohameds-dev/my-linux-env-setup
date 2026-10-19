@@ -31,33 +31,9 @@ echo "Target installation directory: ${CLAW_INSTALL_DIR}"
 echo "[0/6] Validating installation assets..."
 "${SCRIPT_DIR}/validate_installation_files.sh"
 
-# 1. Check prerequisites
+# 1. Check & install prerequisites
 echo "[1/6] Checking system prerequisites..."
-MISSING_PKGS=()
-NEED_INSTALL=false
-
-for cmd in curl unzip wine; do
-    if ! command -v "$cmd" &>/dev/null; then
-        MISSING_PKGS+=("$cmd")
-        NEED_INSTALL=true
-    fi
-done
-
-# Check specifically for 32-bit Wine runtime on Debian/Ubuntu/Mint
-if command -v dpkg &>/dev/null; then
-    if ! dpkg -l wine32:i386 2>/dev/null | grep -q '^ii'; then
-        MISSING_PKGS+=("wine32:i386")
-        NEED_INSTALL=true
-    fi
-fi
-
-if [ "$NEED_INSTALL" = true ]; then
-    echo "Notice: Installing required packages: ${MISSING_PKGS[*]}"
-    echo "Installing Wine and dependencies (sudo required)..."
-    sudo dpkg --add-architecture i386 || true
-    sudo apt-get update
-    sudo apt-get install -y wine wine32:i386 wine64 libasound2-plugins:i386 curl unzip icoutils
-fi
+"${SCRIPT_DIR}/install_deps.sh"
 
 # 2. Prepare directories
 echo "[2/6] Preparing directories..."

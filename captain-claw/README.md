@@ -38,6 +38,7 @@ This variable is sourced by both `install.sh` and `launch.sh`, and can be custom
 | **`cnc-ddraw` (by FunkyFr3sh)** | DirectDraw to OpenGL/Vulkan | Replaces DirectX 5 DirectDraw. Handles hardware 60 FPS frame-limiting, vsync, 4:3 pillarboxing, high-DPI scaling, and smooth cutscene playback. |
 | **Wine Prefix (`~/games/captain-claw/wineprefix`)** | Isolation | Keeps all game files and Windows configuration isolated from your global Wine settings. |
 | **`CLAW.FEC`** | Cutscenes Archive | In-game animated cinematic cutscenes (intro, level transitions, ending). |
+| **`FluidSynth` + SoundFont** | MIDI Synthesizer | Synthesizes Daniel Bernstein's original MIDI/XMI soundtrack (ALSA sequencer routing). |
 
 *(Note on **OpenClaw**: The native C++ reimplementation `pjasicek/OpenClaw` is also tracked as an alternative fallback, but CrazyHook + cnc-ddraw is the gold standard for full cutscenes, exact original physics, and mod compatibility.)*
 
@@ -127,15 +128,17 @@ captain-claw/
 ├── config.env                       # Defines CLAW_INSTALL_DIR (~/games/captain-claw) and subpaths
 ├── README.md                        # Master setup plan and reference guide
 ├── validate_installation_files.sh   # Validates all assets & templates before any sudo/install action
+├── install_deps.sh                  # Checks and installs system dependencies (Wine, FluidSynth, etc.)
 ├── install.sh                       # Automated setup & Wine prefix creator (to be executed)
-├── launch.sh                        # Standalone runner with optimal env vars
+├── launch.sh                        # Standalone runner with optimal env vars & MIDI synthesizer
 ├── clean_uninstall.sh               # Completely removes installed game & prefix for a clean slate
 ├── ddraw.ini                        # Pre-configured 60 FPS & aspect-ratio config
 ├── captain-claw.desktop             # Application menu entry for Linux Mint
 ├── downloads/                       # Staging directory for manually downloaded files (e.g. CLAW.FEC)
 └── tests/                           # TDD automated verification suite
     ├── test-validate-installation.sh
-    └── test-clean-uninstall.sh
+    ├── test-clean-uninstall.sh
+    └── test-install-deps.sh
 ```
 
 ---
